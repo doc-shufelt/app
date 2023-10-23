@@ -12,10 +12,9 @@ emitter.on( 'http-request-received', ( params ) => {
     processId = uuidv4()
     id = uuidv4()
     const httpRequestReceivedEventOutput = {
-        processId: processId,
         id: id,
         event: 'http request received',
-        timestamp: Date.now()
+        timestamp: params.timestamp
     }
 } )
 emitter.on( 'http-response-sent',  ( params ) => {

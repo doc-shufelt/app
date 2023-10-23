@@ -2,7 +2,7 @@
  *   Authorization Controller
  */
 import bcrypt from 'bcrypt'
-import { findUsers } from '../controllers/usersController.js'
+import { findUsers } from './usersController.js'
 
 var data
 var status = 'processing'
