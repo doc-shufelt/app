@@ -3,7 +3,7 @@
  * 
  */
 import { insert, update, find } from '../utilities/mongodb/wrapper.js'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
     var data
     var status = 'processing'
