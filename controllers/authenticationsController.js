@@ -1,7 +1,7 @@
 /**
  *   Authorization Controller
  */
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { findUsers } from '../controllers/usersController.js'
 
 var data
