@@ -2,7 +2,7 @@
  * @description Express router for handling authorization requests
  */
 import express from 'express'
-import { createToken, validateToken, authenticateLogin} from '../controllers/authorizationController.js'
+import { createToken, validateToken, authenticateLogin} from '../controllers/authenticationsController.js'
 
 const router = express.Router()
 
@@ -40,11 +40,12 @@ router.get(`/`, async (req, res) => {
     return res.status( httpResponseCode ).send( response )
 })
 
-router.post(`/`, async (req, res) => {
+router.post(`/token`, async (req, res) => {
     try {
         const request = {
             requests: req.body.requests
         }
+        console.log(request)
         const results = await createToken( request )
         if ( results.status === 'error' ) {
             status = 'error'

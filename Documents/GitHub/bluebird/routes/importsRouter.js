@@ -6,11 +6,12 @@ import { executeFinchImport } from '../controllers/importsController.js'
 
 const router = express.Router()
 
+var data
+var status = 'processing'
+var recordCount = 0
+var httpResponeCode
+
 router.post(`/`, async (req, res) => {
-    var data
-    var status = 'processing'
-    var recordCount = 0
-    var httpResponeCode
     try {
         const request = {
             employerId: req.body.request.employerId

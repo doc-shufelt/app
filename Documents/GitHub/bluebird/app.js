@@ -11,7 +11,7 @@ import employersRouter from './routes/employersRouter.js'
 import employeesRouter from './routes/employeesRouter.js'
 import reportsRouter from './routes/reportsRouter.js'
 import importsRouter from './routes/importsRouter.js'
-import authorizationsRouter from './routes/authorizationsRouter.js'
+import authenticationsRouter from './routes/authenticationsRouter.js'
 
 const PORT = 3000
 const app = express()
@@ -25,7 +25,7 @@ app.use( '/employees', employeesRouter )
 app.use( '/providers', providersRouter )
 app.use( '/reports', reportsRouter )
 app.use( '/imports', importsRouter )
-app.use( '/authorizations', authorizationsRouter )
+app.use( '/authentications', authenticationsRouter )
 
 app.listen(PORT, () => {
     console.log( 'Listening on port ' + PORT )

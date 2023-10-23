@@ -135,12 +135,14 @@ export async function editProviders( request ) {
  * @returns 
  */
 export async function findProviders( request ) {
+    emitter.emit( 'HttpRequest', request )
     try {
         const params = {
             collection: 'providers',
             criteria: request.criteria,
             options: {}
         }
+        //emitter.emit( 'FunctionInvoked' , request)
         const results = await find( params )
         if ( results.status === 'error' ) {
             status = 'error'

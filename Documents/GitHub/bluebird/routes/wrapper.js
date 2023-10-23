@@ -46,10 +46,9 @@ export async function insert( request ) {
 
 /**
  * @name update
- * @description 
- * @param { array } filter 
- * @param { object } employee 
- * @returns 
+ * @description A batch insert function wrapping MongoDb's update() function
+ * @param { object } request 
+ * @returns { object } A canonical response object
  */
 export async function update( request ) {
     var data
@@ -91,9 +90,9 @@ export async function update( request ) {
 }
 
 /**
- * @name find
+*
  * @description 
- * @param { object } criteria An object containing an array of key-value pairs describing the filters
+ * @param { object } request An object containing an array of key-value pairs describing the filters
  * @returns { object } A canonical response object 
  */
 export async function find( request ) {

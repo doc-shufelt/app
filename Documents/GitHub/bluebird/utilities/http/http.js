@@ -5,8 +5,6 @@
 
 export async function sendHttpRequest( params ) {
     try {
-        console.log('PARAMS')
-        console.log(params)
         var data
         var status = 'processing'
         var recordCount = 0
@@ -47,23 +45,18 @@ export async function sendHttpRequest( params ) {
         switch( params.resource ) {
             case 'employer/individual':
                 data = list.responses
-                console.log('individual')
                 break
             case 'employer/pay-statement':
                 data = list.responses[0].body.pay_statements
-                console.log('pay-statement')
                 break
             case 'employer/payment': 
                 data = list[0].id
-                console.log('payment')
                 break
             case 'employer/directory':
                 data = list.individuals
-                console.log('directory')
         }
-
             status = 'success'
-            //recordCount = list.paging.count
+            recordCount = data.length
     } catch ( e ) {
         const error = {
             name: e.name,
@@ -78,8 +71,6 @@ export async function sendHttpRequest( params ) {
         recordCount: recordCount,
         data: data
     }
-    //console.log('response from http')
-    //console.log(response)
     return response
 }
 

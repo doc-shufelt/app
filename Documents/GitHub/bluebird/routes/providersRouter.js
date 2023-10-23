@@ -15,7 +15,14 @@ var httpResponseCode        // property holding the Http status code
 const collectionName = 'providers'
 
 router.get(`/`, async (req, res) => {
-    emitter.emit( 'request', req )
+    emitter.emit( 
+        'router-invoked', 
+        { 
+            router: 'providers',
+            method: 'get',
+            timestamp: new Date()
+        } 
+    )
     try {
         const request = req.query
         const results = await findRecords( request, collectionName )
@@ -38,7 +45,16 @@ router.get(`/`, async (req, res) => {
         recordCount: recordCount,
         data: data
     }
-    emitter.emit( 'response', response)
+    emitter.emit( 
+        'router-returned', 
+        { 
+            module: 'providers',
+            method: 'get',
+            status: response.status,
+            recordCount: recordCount,  
+            timestamp: new Date()
+        }
+    )
     res.status( httpResponseCode ).send( response )
 })
 

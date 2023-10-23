@@ -5,51 +5,40 @@
 import { sendHttpRequest } from "../utilities/http/http.js";
 import { addRecords } from '../controllers/controller.js'
 
+/* Response object fields */
 var data
 var status = 'processing'
 var recordCount = 0
 
 /**
- * Function: executeInitialImportProcess()
- * @description This function serves as the primary flow controller for the initial data import process
- * @param { object } request An employer object of the company for which to import data
- * @returns boolean
+ * Function: executeFinchImportProcess()
+ * @description This function serves as the primary flow controller for the initial data import process from Finch
+ * @param { object } request An object containing a companyId property { companyId: 'orjf-ffid-eodd-eedc'}
+ * @returns { object } A canonical response object containing an array of inserted employee records
  */
 export async function executeFinchImport( request ) {
     var completeEmployeeProfiles = []
     var employeeProfiles
     var payStatements
     try {
-        employeeProfiles = await buildEmployeeProfiles( request )
-    } catch ( e ) {
-        const error = {
-            name: e.name,
-            message: e.message,
-            stack: e.stack
-        }
-        status = 'error'
-        data = error
-    }
-    try {
-        payStatements = await importPayStatementsFromFinch()  
-    } catch ( e ) {
-        const error = {
-            name: e.name,
-            message: e.message,
-            stack: e.stack
-        }
-        status = 'error'
-        data = error
-    }
-    try {
+        employeeProfiles = await importEmployeeProfilesFromFinch( request )
+        payStatements = await importPayStatementsFromFinch() 
         for ( const profile of employeeProfiles.data ) {
-            let statement = payStatements.data.find( ( record ) => {
+            var statement = payStatements.data.find( ( record ) => {
                 return record.id === profile.finchId
             } )
+            delete statement.id
             profile.statement = statement
             completeEmployeeProfiles.push( profile )
         }
-        data = completeEmployeeProfiles
+        var inserted = await addRecords({ requests: completeEmployeeProfiles } , 'employees' )
+        if  ( inserted.status === 'error' ) {
+            status = 'error'
+        } else {
+            status = 'success'
+        }
+        data = inserted.data
+        recordCount = inserted.recordCount
     } catch ( e ) {
         const error = {
             name: e.name,
@@ -59,7 +48,6 @@ export async function executeFinchImport( request ) {
         status = 'error'
         data = error
     }
-
     const response = {
         status: status,
         recordCount: recordCount,
@@ -72,7 +60,7 @@ export async function executeFinchImport( request ) {
  * 
  * @returns 
  */
-async function buildEmployeeProfiles( request ) {
+async function importEmployeeProfilesFromFinch( request ) {
     var profilesList = []
     var employee
     var directory
@@ -99,11 +87,13 @@ async function buildEmployeeProfiles( request ) {
         data = error
     }
     try {  
-        for ( const profile of profiles.profiles ) {
+        for ( const profile of profiles.data ) {
             employee = directory.data.find( ( element ) => { 
                 return element.finchId === profile.finchId
             } )
+            profile.employerId = employee.employerId
             profile.department = employee.department
+            profile.active = employee.active
             profilesList.push( profile ) 
         }
         data = profilesList
@@ -147,9 +137,11 @@ async function importEmployeeDirectoryFromFinch( request ) {
             if ( employee.is_active === true ) {
                 cleaned = {
                     finchId: employee.id,
+                    employerId: request.employerId,
                     firstName: employee.first_name,
                     middleName: employee.middle_name,
                     lastName: employee.last_name,
+                    active: employee.is_active,
                     department: employee.department.name
                 }
                 active.push( cleaned )
@@ -181,7 +173,6 @@ async function importEmployeeDirectoryFromFinch( request ) {
  * @returns { object }
  */
 async function importEmployeeDetailsFromFinch( directory ) {
-    var employees = {}
     var profileList = []
     var finchCompatableList = []  // need to format the list to conform to the request body requirements
     try {
@@ -213,11 +204,23 @@ async function importEmployeeDetailsFromFinch( directory ) {
                 }
             profileList.push( profile )
         }
-        employees.profiles = profileList
-        return employees
-    } catch ( error ) {
-        return error
+        data = profileList
+        status = 'success'
+    } catch ( e ) {
+        const error = {
+            name: e.name,
+            message: e.message,
+            stack: e.message
+        }
+        status = 'error'
+        data = error
     }
+    const response = {
+        status: status,
+        recordCount: recordCount,
+        data: data
+    }
+    return response
 }
 
 /**
@@ -225,9 +228,27 @@ async function importEmployeeDetailsFromFinch( directory ) {
  * @returns 
  */
 export async function importPayStatementsFromFinch() {
-    var mostRecentPaymentRun = await importRecentPaymentRun()
-    let payStatements = await importEmployeePayStatementsFromFinch( mostRecentPaymentRun.data )
-    return payStatements
+    try {
+        var paymentRunId = await importRecentPaymentRun()
+        var statements = await importEmployeePayStatementsFromFinch( paymentRunId.data )
+        data = statements.data
+        recordCount = statements.recordCount
+        status = 'success'
+    } catch ( e ) {
+        const error = {
+            name: e.name,
+            message: e.message,
+            stack: e.stack
+        }
+        status = 'error'
+        data = error
+    }
+    const response = {
+        status: status,
+        recordCount: recordCount,
+        data: data
+    }
+    return response
 }
 
 /**
@@ -281,10 +302,10 @@ export async function importEmployeePayStatementsFromFinch( request ) {
         let results = await sendHttpRequest( params )
         let statements = results.data
         let statementsList = []
-        await statements.forEach((statement) => {
+        for ( const statement of statements ) {
             let cleanStatement = {
                 id: statement.individual_id,
-                type: statement.type,
+                employmentType: statement.type,
                 grossPay: statement.gross_pay.amount,
                 currency: statement.gross_pay.currency
             }
@@ -310,7 +331,7 @@ export async function importEmployeePayStatementsFromFinch( request ) {
             })
             cleanStatement.pretaxDeductions = pretaxDeductions
             statementsList.push(cleanStatement)
-        })
+        }
         data = statementsList
         status = 'success'
         recordCount = data.length
@@ -329,5 +350,57 @@ export async function importEmployeePayStatementsFromFinch( request ) {
         data: data
     }
     return response
+}
+
+async function importFinchForwardFields() {
+    try {
+        const params = {
+            method: 'get',
+            resource: 'employer/payment',
+            query: {
+                start_date: '2022-01-01',
+                end_date: '2022-01-31'
+            }
+        }
+        /* let results = await sendHttpRequest( params )   
+
+        data = results.data
+        status = 'success'
+        recordCount = data.length */
+    } catch ( e ) {
+        const error = {
+            name: e.name,
+            message: e.message,
+            stack: e.stack
+        }
+        status = 'error'
+        data = error
+    }
+    const response = {
+        status: 'success',
+        recordCount: 0,
+        data: {
+
+        }
+    }
+    return response
+}
+
+async function createEmployeeTaxProfile( request ) {
+    // Finch uses the 2-letter ISO 3166 country code 
+    return {
+        "id": 4241,
+        "taxCountryCode": "USA",
+        "federalFilingStatus": "SINGLE",
+        "stateFilingStatus": "SINGLE",
+        "taxState": 'NC',
+        "annualW2Income": request.employee.annualIncome,
+        "acceptedDisclaimer": true,
+        "isSetupComplete": true,
+        "useW2Withholding": false,
+        "federalW2Withholding": request.employee.federalW2Withholding,
+        "stateW2Withholding": request.employee.stateW2Withholding,
+        "numExemptions": 2
+    }
 }
 

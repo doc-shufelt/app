@@ -19,7 +19,6 @@ var recordCount = 0
  * @returns { object } A canonical response object with an array of inserted ids in the Response <body>
  */
 export async function addRecords( request, collection ) {
-    console.log(request)
    /* try {
         const validation = await validateRequest( request )
         if ( validation.status === 'error' ) {
@@ -96,7 +95,6 @@ export async function editRecords( request, collection ) {
             status = 'error'
         } else {
             for ( const object of request.requests ) {
-                console.log(request)
                 let params = {
                     collection: collection,
                     object: object,
@@ -140,6 +138,15 @@ export async function editRecords( request, collection ) {
  * @returns 
  */
 export async function findRecords( request, collection ) {
+    emitter.emit( 
+        'function-invoked', 
+        { 
+            module: 'controller', 
+            function: 'findRecords', 
+            collection: collection, 
+            timestamp: new Date()
+        } 
+    )
     try {
         const params = {
             collection: collection,
@@ -168,5 +175,16 @@ export async function findRecords( request, collection ) {
         recordCount: recordCount,
         data: data
     }
+    emitter.emit( 
+        'function-returned', 
+        { 
+            module: 'controller', 
+            function: 'findRecords', 
+            collection: collection, 
+            status: response.status,
+            recordCount: response.recordCount,
+            timestamp: new Date()
+        }
+    )
     return response
 } 
