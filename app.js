@@ -13,7 +13,7 @@ import reportsRouter from './routes/reportsRouter.js'
 import importsRouter from './routes/importsRouter.js'
 import authenticationsRouter from './routes/authenticationsRouter.js'
 
-const PORT = 3200
+const PORT = 8080
 const app = express()
 
 app.use( express.urlencoded({ extended: true }) )
