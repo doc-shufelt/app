@@ -12,12 +12,15 @@ import employeesRouter from './routes/employeesRouter.js'
 import reportsRouter from './routes/reportsRouter.js'
 import importsRouter from './routes/importsRouter.js'
 import authenticationsRouter from './routes/authenticationsRouter.js'
+import healthCheck from './utilities/health.js'
 
 const PORT = 8080
 const app = express()
 
+app.use( '/health', healthCheck )
 app.use( express.urlencoded({ extended: true }) )
 app.use( express.json() )
+app.use( '/health', healthCheck )
 app.use( '/users', usersRouter )
 app.use( '/providers', providersRouter )
 app.use( '/employers', employersRouter )
