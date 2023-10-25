@@ -1,5 +1,4 @@
 // Module: Employees Router
-
 import express from 'express'
 import { addRecords, editRecords, findRecords } from '../controllers/controller.js'
 
@@ -43,6 +42,24 @@ router.get(`/`, async (req, res) => {
 router.put(`/`, async (req, res) => {
     var fallout
     try {
+        if ( req.body === undefined || req.body === null || Object.keys( req.body ).length === 0 ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a json-encoded body.'
+            })
+        }
+        if ( ! req.body.hasOwnProperty( 'requests' )) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a requests property.'
+            })
+        }
+        if ( ! Array.isArray( req.body.requests ) ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The requests property must be an array.'
+            })
+        }
         const request = req.body
         const collection = collectionName
         let results = await editRecords( request, collection )
@@ -76,6 +93,24 @@ router.put(`/`, async (req, res) => {
 
 router.post(`/`, async (req, res) => {
     try {
+        if ( req.body === undefined || req.body === null || Object.keys( req.body ).length === 0 ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a json-encoded body.'
+            })
+        }
+        if ( ! req.body.hasOwnProperty( 'requests' )) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a requests property.'
+            })
+        }
+        if ( ! Array.isArray( req.body.requests ) ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The requests property must be an array.'
+            })
+        }
         const request = req.body
         const collection = collectionName
         const results = await addRecords( request, collection )

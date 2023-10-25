@@ -5,6 +5,10 @@
 
 import emitter from '../controllers/loggerController.js'
 import { validateEmployees } from '../controllers/employeesController.js'
+import { validateEmployers } from '../controllers/employersController.js'
+import { validateProviders } from '../controllers/providersController.js'
+import { validateReports } from '../controllers/reportsController.js'
+import { validateUsers } from '../controllers/usersController.js'
 import { insert, update, find } from '../utilities/mongodb/wrapper.js'
 
 var data
@@ -19,16 +23,29 @@ var recordCount = 0
  * @returns { object } A canonical response object with an array of inserted ids in the Response <body>
  */
 export async function addRecords( request, collection ) {
-   /* try {
-        const validation = await validateRequest( request )
+    var validation
+    try {
+        switch( collection ) {
+            case 'users': 
+                validation = await validateUsers( request.requests )
+                break
+            case 'providers':
+                validation = await validateProviders( request.requests )
+                break
+            case 'employees':
+                validation = await validateEmployees( request.requests )
+                break
+            case 'employers':
+                validation = await validateEmployers( request.requests )
+                break
+            case 'reports':
+                validation = await validateReports( request.requests )
+                break
+        }
+        console.log(validation)
         if ( validation.status === 'error' ) {
-            const error = {
-                name: request.resource + ' validation error',
-                message: validation.message,
-                stack: validation.body
-            }
-            data = error
             status = 'error'
+            data = validation.data
         }
     } catch ( e ) {
         const error = {
@@ -38,7 +55,7 @@ export async function addRecords( request, collection ) {
         }
         data = error
         status = 'error'
-    } */
+    }
     if ( status != 'error' ) {
         try {
             const params = {

@@ -353,39 +353,11 @@ export async function importEmployeePayStatementsFromFinch( request ) {
 }
 
 async function importFinchForwardFields() {
-    try {
-        const params = {
-            method: 'get',
-            resource: 'employer/payment',
-            query: {
-                start_date: '2022-01-01',
-                end_date: '2022-01-31'
-            }
-        }
-        /* let results = await sendHttpRequest( params )   
 
-        data = results.data
-        status = 'success'
-        recordCount = data.length */
-    } catch ( e ) {
-        const error = {
-            name: e.name,
-            message: e.message,
-            stack: e.stack
-        }
-        status = 'error'
-        data = error
-    }
-    const response = {
-        status: 'success',
-        recordCount: 0,
-        data: {
-
-        }
-    }
-    return response
+           
 }
 
+// TO-DO: Complete this implementation
 async function createEmployeeTaxProfile( request ) {
     // Finch uses the 2-letter ISO 3166 country code 
     return {

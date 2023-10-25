@@ -95,3 +95,7 @@ export async function createReserveReport( request ) {
         ['married', []]
     ])
 }
+
+export async function validateReports( reports ) {
+    
+}

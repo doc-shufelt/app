@@ -12,13 +12,12 @@ var status = 'processing'
 var recordCount = 0
 var httpResponseCode
 
-const collectionName = 'users'
+const collection = 'users'
 
 router.get(`/`, async (req, res) => {
     emitter.emit( 'insert' , req)
     try {
         const request = req.query
-        const collection = collectionName
         const results = await findRecords( request, collection )
             data = results.data
             recordCount = results.recordCount
@@ -44,8 +43,25 @@ router.get(`/`, async (req, res) => {
 
 router.post(`/`, async (req, res) => {
     try {
+        if ( req.body === undefined || req.body === null || Object.keys( req.body ).length === 0 ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a json-encoded body.'
+            })
+        }
+        if ( ! req.body.hasOwnProperty( 'requests' )) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a requests property.'
+            })
+        }
+        if ( ! Array.isArray( req.body.requests ) ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The requests property must be an array.'
+            })
+        }
         const request = req.body
-        const collection = collectionName
         const results = await addRecords( request, collection )
         if ( results.status === process.env.api_status_error ) {
             httpResponseCode = 400
@@ -75,8 +91,25 @@ router.post(`/`, async (req, res) => {
 
 router.put('/', async (req, res) => {
     try {
+        if ( req.body === undefined || req.body === null || Object.keys( req.body ).length === 0 ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a json-encoded body.'
+            })
+        }
+        if ( ! req.body.hasOwnProperty( 'requests' )) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a requests property.'
+            })
+        }
+        if ( ! Array.isArray( req.body.requests ) ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The requests property must be an array.'
+            })
+        }
         const request = req.body
-        const collection = collectionName
         const results = await editRecords( request, collection )
         if ( results.status === 'error' ) {
             status = 'error'

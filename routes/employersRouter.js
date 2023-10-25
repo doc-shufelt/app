@@ -41,6 +41,25 @@ router.get(`/`, async (req, res) => {
 
 router.post(`/`, async (req, res) => {
     try {
+        if ( req.body === undefined || req.body === null || Object.keys( req.body ).length === 0 ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a json-encoded body.'
+            })
+        }
+        if ( ! req.body.hasOwnProperty( 'requests' )) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The request must have a requests property.'
+            })
+        }
+        if ( ! Array.isArray( req.body.requests ) ) {
+            return res.status( 400 ).send( {
+                status: 'error',
+                message: 'The requests property must be an array.'
+            })
+        }
+
         const request = req.body
         const results = await addRecords( request, collectionName )
         if ( results.status === 'error' ) {
@@ -71,19 +90,23 @@ router.post(`/`, async (req, res) => {
 })
 
 router.put('/', async (req, res) => {
-    if ( req.body === undefined ) {
-        const error = {
-            name: 'Malformed Request Error',
-            message: 'The request must have a body.'
-        }
-        status = 'error'
-        httpResponseCode = 400
-        response = {
-            status: status,
-            recordCount: recordCount,
-            data: error
-        }
-        res.status( httpResponseCode ).send( response )
+    if ( req.body === undefined || req.body === null || Object.keys( req.body ).length === 0 ) {
+        return res.status( 400 ).send( {
+            status: 'error',
+            message: 'The request must have a json-encoded body.'
+        })
+    }
+    if ( ! req.body.hasOwnProperty( 'requests' )) {
+        return res.status( 400 ).send( {
+            status: 'error',
+            message: 'The request must have a requests property.'
+        })
+    }
+    if ( ! Array.isArray( req.body.requests ) ) {
+        return res.status( 400 ).send( {
+            status: 'error',
+            message: 'The requests property must be an array.'
+        })
     }
     try {
         const request = req.body
