@@ -2,25 +2,23 @@
  *   App.Js
  */
 import dotenv from 'dotenv'
-dotenv.config( { path: '/Users/docshufelt/Documents/bluebird/server/.env' } )
+dotenv.config( { path: '/Users/docshufelt/Documents/GitHub/official/.env' } )
 
 import express from 'express'
-import usersRouter from './routes/usersRouter.js'
-import providersRouter from './routes/providersRouter.js'
-import employersRouter from './routes/employersRouter.js'
-import employeesRouter from './routes/employeesRouter.js'
-import reportsRouter from './routes/reportsRouter.js'
-import importsRouter from './routes/importsRouter.js'
-import authenticationsRouter from './routes/authenticationsRouter.js'
-import healthCheck from './utilities/health.js'
+import usersRouter from './api/routers/user.js'
+import providersRouter from './api/routers/provider.js'
+import employersRouter from './api/routers/employer.js'
+import employeesRouter from './api/routers/employee.js'
+import reportsRouter from './api/routers/report.js'
+import importsRouter from './api/routers/import.js'
+import authenticationsRouter from './api/routers/authentication.js'
+// import healthCheck from './utilities/health.js'
 
 const PORT = 8080
 const app = express()
 
-app.use( '/health', healthCheck )
 app.use( express.urlencoded({ extended: true }) )
 app.use( express.json() )
-app.use( '/health', healthCheck )
 app.use( '/users', usersRouter )
 app.use( '/providers', providersRouter )
 app.use( '/employers', employersRouter )
