@@ -1,0 +1,28 @@
+import * as winston from 'winston'
+import 'winston-mongodb'
+import LogConfig from '../../config/LogConfig.js'
+
+export default async function initializeLogger(mongoClient) {
+  const infoLogger = winston.createLogger({
+    level: 'info',
+    defaultMeta: {
+      service: 'something'
+    },
+    format: winston.format.combine(
+      winston.format.errors({
+        stack: true
+      }),
+      winston.format.timestamp({
+        format: 'YYYY-MM-DD hh:mm:ss.SSS A',
+      }),
+      winston.format.json()
+    ),
+    transports: [new winston.transports.MongoDB({
+      db: mongoClient,
+      dbName: 'bluebird',
+      collection: 'logs',
+      label: 'bluebird',
+    })]
+  })
+  return infoLogger
+}

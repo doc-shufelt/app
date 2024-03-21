@@ -1,4 +1,5 @@
+export default async function AuditConfig() {
+  return {
 
-export default async function AuditConfig () {
-    
+  }
 }

@@ -1,6 +1,7 @@
 /* imports */
-import connectToDatabase from '../../../../utilities/database.js'
-import { ObjectId } from 'mongodb'
+import {
+  ObjectId
+} from 'mongodb'
 
 /**
  * 
@@ -9,19 +10,14 @@ import { ObjectId } from 'mongodb'
  * @param { object } options 
  * @returns { Promise<array> }
  */
-export default async function update( objectId, updateDocument, collectionName, options ) {
-    try {
-        // connect to mongodb
-        const database = await connectToDatabase()
-        const collection = await database.collection( collectionName )
-        // build the mongodb-specific filter format from the _id passed in the updateDocument 
-        const filter = { "_id": new ObjectId( objectId ) }
-        delete updateDocument._id // remove the id to avoid mongo's immutable property error
-        // find and update the document
-        const results = await collection.findOneAndUpdate( filter, { $set: updateDocument }, options )
-        return results
-    } catch ( error ) {
-        console.log( error )
-        return error
-    }
+export default async function update(objectId, updateDocument, collectionName, options, mongoClient) {
+  const collection = await mongoClient.db('bluebird').collection(collectionName)
+  const filter = {
+    "_id": new ObjectId(objectId)
+  } // build the mongodb-specific filter format from the _id passed in the updateDocument 
+  delete updateDocument._id // remove the id to avoid mongo's immutable property error
+  const results = await collection.findOneAndUpdate(filter, {
+    $set: updateDocument
+  }, options)
+  return results
 }

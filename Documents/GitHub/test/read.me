@@ -1,37 +1,23 @@
-Coding Principles
-- Declare variables at the lowest possible scope
-- Check the type of the value returned from a function
-- A function should accomplish one and only one objective
-- Achieve x% code coverage
-- Naming conventions
-    - filters: object containing search parameters
-    - options: object containing runtime configuration options
-- Use backticks for strings
-- Expose Controllers via an abstract object
-- 'createResource' use cases are how canonical objects get created and values get validated
+Directory structure
 
-Documentation
-- System Documentation
-- API Documentation
 
-Dictionary
-- Property
+Services
+- Audit
+- Census
+- Connection
+- Database
 - Employee
 - Employer
-- Provider
+- Error
+- Finch
 - Flag
-- Audit
-- Connection
+- Import
+- Property
+- Token
 - User
 
+Design principles
+- Each use case is handled by a distinct controller
+- All the controllers for a particular service are exposed via a {Service}Controller object
 
-Directory
-- api
-  - src 
-    - services
-      - Employee
-        - config
-        - controllers
-        - object
-        - model
-        - router
+Standards and Practices

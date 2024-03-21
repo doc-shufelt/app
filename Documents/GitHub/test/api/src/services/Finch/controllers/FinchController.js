@@ -1,7 +1,7 @@
 import generateFinchToken from './generateFinchToken/generateFinchToken.js'
 
 const FinchController = {
-    generateFinchToken
+  generateFinchToken
 }
 
 export default FinchController

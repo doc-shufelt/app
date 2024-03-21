@@ -3,18 +3,12 @@ import DatabaseController from '../../../../Database/controllers/DatabaseControl
 
 /**
  * @description
- * @param { string } _id 
+ * @param {string} employerId
+ * @param {object} mongoClient
  * @returns { Promise<object> }
  */
-export default function getEmployerById( id ) {
-    try {
-        // do some validation here
-        // - valid id
-        const collectionName = 'employers'
-        const results = DatabaseController.findById( id, collectionName )
-        return results
-    } catch ( error ) {
-        console.log(error)
-        return error
-    }
+export default function getEmployerById(employerId, mongoClient) {
+  const collection = 'employers'
+  const results = DatabaseController.findById(employerId, collection, {}, mongoClient)
+  return results
 }

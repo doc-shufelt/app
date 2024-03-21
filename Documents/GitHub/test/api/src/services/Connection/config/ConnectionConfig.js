@@ -1,4 +1,5 @@
+export default function ConnectionConfig() {
+  return {
 
-export default function ConnectionConfig () {
-    
+  }
 }

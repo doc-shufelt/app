@@ -4,16 +4,13 @@ import DatabaseController from '../../../../Database/controllers/DatabaseControl
 
 /**
  * @description
- * @param { object } employee 
+ * @param {object} newDocument 
+ * @param {object} mongoClient the singleton instance of mongodb
  * @returns { object }
  */
-export default async function createEmployer( newDocument ) {
-    try {
-        const collectionName = 'employers'
-        const employer = Employer( newDocument )
-        const results = await DatabaseController.insert( employer, collectionName )
-        return results
-    } catch ( error ) {
-        return error
-    }
+export default async function createEmployer(document, mongoClient) {
+  const collectionName = 'employers'
+  const employer = Employer(document)
+  const results = await DatabaseController.insert(employer, collectionName, {}, mongoClient)
+  return results
 }

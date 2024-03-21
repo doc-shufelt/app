@@ -1,6 +1,5 @@
-
-export default function EmployeeConfig () {
-    return {
-        collection: `employees`
-    }
+export default function EmployeeConfig() {
+  return {
+    collection: `employees`
+  }
 }

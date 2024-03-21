@@ -4,8 +4,10 @@ import DatabaseController from '../../../../Database/controllers/DatabaseControl
 
 /**
  * 
- * @returns 
+ * @param {array} properties 
+ * @param {objecjt} mongoClient 
+ * @returns {Promise<array>}
  */
-export default async function updatePropertyBulk() {
-    return `updatePropertyBulk`
+export default async function updatePropertyBulk(properties, mongoClient) {
+    return []
 }

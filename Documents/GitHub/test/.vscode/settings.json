@@ -1,0 +1,10 @@
+{
+    "compile-hero.disable-compile-files-on-did-save-code": true,
+    "eslint.codeActionsOnSave.mode": "problems",
+    "eslint.codeActionsOnSave.rules": null,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": [
+        "source.fixAll.eslint"
+    ],
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"]
+}

@@ -7,13 +7,9 @@ import DatabaseController from '../../../../Database/controllers/DatabaseControl
  * @param { object } employee 
  * @returns { object }
  */
-export default async function createEmployee( newDocument ) {
-    try {
-        const collectionName = 'employees'
-        const employee = await Employee( newDocument )
-        const results = await DatabaseController.insert( employee, collectionName )
-        return results
-    } catch ( error ) {
-        return error
-    }
+export default async function createEmployee(document, mongoClient) {
+  const collectionName = 'employees'
+  const employee = await Employee(document)
+  const results = await DatabaseController.insert(employee, collectionName, mongoClient)
+  return results
 }

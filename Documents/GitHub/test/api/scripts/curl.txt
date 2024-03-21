@@ -1,7 +1,10 @@
 https://connect.tryfinch.com/authorize?
 &client_id=3e492248-22bb-41c7-a3e8-293579610670
-&products=company directory individual employment payment pay_statement
+&products=company directory individual employment payment pay_statement ssn
 &redirect_uri=http://localhost:8080/imports
 &sandbox=true
 
-598c541f-5191-43ee-a86b-c9d35a798913
+
+
+
+https://bluebird-w4.s3.amazonaws.com/wfour.pdf

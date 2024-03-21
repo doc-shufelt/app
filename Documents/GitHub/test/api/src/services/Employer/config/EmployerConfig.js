@@ -1,4 +1,5 @@
+export default function EmployerConfig() {
+  return {
 
-export default function EmployerConfig () {
-    
+  }
 }
